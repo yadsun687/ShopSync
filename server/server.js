@@ -16,6 +16,10 @@ app.use(
 app.use(express.json());
 app.use(cookieParser());
 
+// Routes
+const authRoutes = require('./routes/authRoutes');
+app.use('/api/auth', authRoutes);
+
 // Health check route
 app.get("/api/health", (req, res) => {
   res.json({ status: "ok", timestamp: new Date().toISOString() });

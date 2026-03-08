@@ -20,11 +20,11 @@ const SellerCard = ({ name, power: initialPower }) => {
 
   return (
     <div
-      className="rounded-lg p-6 bg-white shadow-md transition-all"
+      className="rounded-lg p-6 bg-white dark:bg-gray-800 shadow-md transition-all"
       style={{ border: `3px solid ${borderColor}` }}
     >
       <div className="flex items-center justify-between mb-3">
-        <h3 className="text-lg font-semibold text-gray-800">{name}</h3>
+        <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100">{name}</h3>
         <span
           className="rounded-full px-3 py-1 text-sm font-bold text-white"
           style={{ backgroundColor: color }}
@@ -32,7 +32,7 @@ const SellerCard = ({ name, power: initialPower }) => {
           {rank}
         </span>
       </div>
-      <p className="text-gray-600 mb-4">
+      <p className="text-gray-600 dark:text-gray-400 mb-4">
         Power: <span className="font-bold text-lg">{power}</span>
       </p>
       <button

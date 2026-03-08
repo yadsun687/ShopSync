@@ -55,14 +55,14 @@ const ProductReviewsPage = () => {
   };
 
   if (loading) {
-    return <div className="flex justify-center py-12 text-gray-500">Loading reviews...</div>;
+    return <div className="flex justify-center py-12 text-gray-500 dark:text-gray-400">Loading reviews...</div>;
   }
 
   return (
     <div>
-      <Link to="/inventory" className="text-sm text-indigo-600 hover:underline">&larr; Back to Inventory</Link>
+      <Link to="/inventory" className="text-sm text-indigo-600 dark:text-indigo-400 hover:underline">&larr; Back to Inventory</Link>
 
-      <h2 className="mt-4 text-2xl font-bold text-gray-800">
+      <h2 className="mt-4 text-2xl font-bold text-gray-800 dark:text-gray-100">
         Reviews: {product?.name || 'Product'}
       </h2>
 
@@ -72,7 +72,7 @@ const ProductReviewsPage = () => {
           value={newComment}
           onChange={(e) => setNewComment(e.target.value)}
           placeholder="Write a review..."
-          className="flex-1 rounded border border-gray-300 px-3 py-2 focus:border-indigo-500 focus:outline-none"
+          className="flex-1 rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-gray-900 dark:text-gray-100 focus:border-indigo-500 focus:outline-none"
         />
         <button
           onClick={handleAddComment}
@@ -85,7 +85,7 @@ const ProductReviewsPage = () => {
       {/* Comments thread */}
       <div className="mt-6">
         {comments.length === 0 ? (
-          <p className="text-gray-500">No reviews yet. Be the first to comment!</p>
+          <p className="text-gray-500 dark:text-gray-400">No reviews yet. Be the first to comment!</p>
         ) : (
           comments.map((comment) => (
             <CommentItem

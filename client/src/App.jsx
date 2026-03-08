@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate, Link } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { FormProvider } from './context/FormContext';
+import { ThemeProvider, useTheme } from './context/ThemeContext';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import UsersPage from './pages/UsersPage';
@@ -22,18 +23,26 @@ const GuestRoute = ({ children }) => {
 
 const Layout = ({ children }) => {
   const { user, logout } = useAuth();
+  const { config, toggleTheme } = useTheme();
+
   return (
-    <div className="min-h-screen bg-gray-100">
-      <nav className="bg-white shadow-sm">
+    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 transition-colors">
+      <nav className="bg-white dark:bg-gray-800 shadow-sm">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-3">
           <div className="flex items-center gap-6">
-            <Link to="/" className="text-xl font-bold text-indigo-600">ShopSync</Link>
-            <Link to="/" className="text-sm text-gray-600 hover:text-indigo-600">Dashboard</Link>
-            <Link to="/inventory" className="text-sm text-gray-600 hover:text-indigo-600">Inventory</Link>
-            <Link to="/users" className="text-sm text-gray-600 hover:text-indigo-600">Users</Link>
+            <Link to="/" className="text-xl font-bold text-indigo-600 dark:text-indigo-400">ShopSync</Link>
+            <Link to="/" className="text-sm text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400">Dashboard</Link>
+            <Link to="/inventory" className="text-sm text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400">Inventory</Link>
+            <Link to="/users" className="text-sm text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400">Users</Link>
           </div>
           <div className="flex items-center gap-4">
-            <span className="text-sm text-gray-600">{user.username} ({user.role})</span>
+            <button
+              onClick={toggleTheme}
+              className="rounded bg-gray-200 dark:bg-gray-700 px-3 py-1.5 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-600"
+            >
+              {config.theme === 'dark' ? '☀️ Light' : '🌙 Dark'}
+            </button>
+            <span className="text-sm text-gray-600 dark:text-gray-300">{user.username} ({user.role})</span>
             <button onClick={logout} className="rounded bg-red-500 px-3 py-1.5 text-sm text-white hover:bg-red-600">Logout</button>
           </div>
         </div>
@@ -52,8 +61,8 @@ const Dashboard = () => {
 
   return (
     <div>
-      <h2 className="mb-6 text-2xl font-bold text-gray-800">Dashboard</h2>
-      <h3 className="mb-4 text-lg font-semibold text-gray-700">Seller Rankings</h3>
+      <h2 className="mb-6 text-2xl font-bold text-gray-800 dark:text-gray-100">Dashboard</h2>
+      <h3 className="mb-4 text-lg font-semibold text-gray-700 dark:text-gray-300">Seller Rankings</h3>
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {sellers.map((seller) => (
           <SellerCard key={seller.name} name={seller.name} power={seller.power} />
@@ -66,6 +75,7 @@ const Dashboard = () => {
 function App() {
   return (
     <BrowserRouter>
+      <ThemeProvider>
       <AuthProvider>
         <Routes>
           <Route path="/login" element={<GuestRoute><LoginPage /></GuestRoute>} />
@@ -76,6 +86,7 @@ function App() {
           <Route path="/users" element={<ProtectedRoute><Layout><UsersPage /></Layout></ProtectedRoute>} />
         </Routes>
       </AuthProvider>
+      </ThemeProvider>
     </BrowserRouter>
   );
 }

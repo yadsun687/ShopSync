@@ -48,12 +48,12 @@ const InventoryPage = () => {
   };
 
   if (loading) {
-    return <div className="flex justify-center py-12 text-gray-500">Loading inventory...</div>;
+    return <div className="flex justify-center py-12 text-gray-500 dark:text-gray-400">Loading inventory...</div>;
   }
 
   return (
     <div>
-      <h2 className="mb-6 text-2xl font-bold text-gray-800">Inventory</h2>
+      <h2 className="mb-6 text-2xl font-bold text-gray-800 dark:text-gray-100">Inventory</h2>
 
       {/* Toast notification */}
       {toast && (
@@ -71,12 +71,12 @@ const InventoryPage = () => {
       )}
 
       {products.length === 0 ? (
-        <p className="text-center text-gray-500">No products in inventory</p>
+        <p className="text-center text-gray-500 dark:text-gray-400">No products in inventory</p>
       ) : (
         <div className="overflow-x-auto">
-          <table className="w-full border-collapse rounded bg-white shadow-sm">
+          <table className="w-full border-collapse rounded bg-white dark:bg-gray-800 shadow-sm">
             <thead>
-              <tr className="border-b bg-gray-50 text-left text-sm font-medium text-gray-600">
+              <tr className="border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700 text-left text-sm font-medium text-gray-600 dark:text-gray-300">
                 <th className="px-4 py-3">Name</th>
                 <th className="px-4 py-3">Category</th>
                 <th className="px-4 py-3">Price</th>
@@ -87,7 +87,7 @@ const InventoryPage = () => {
             </thead>
             <tbody>
               {products.map((product) => (
-                <tr key={product._id} className="border-b text-sm text-gray-700 hover:bg-gray-50">
+                <tr key={product._id} className="border-b border-gray-200 dark:border-gray-700 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700">
                   <td className="px-4 py-3 font-medium">{product.name}</td>
                   <td className="px-4 py-3">{product.category}</td>
                   <td className="px-4 py-3">${product.price.toFixed(2)}</td>

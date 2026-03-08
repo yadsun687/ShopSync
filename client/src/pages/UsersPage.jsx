@@ -37,14 +37,14 @@ const UsersPage = () => {
   }, [searchTerm, allUsers]);
 
   if (loading) {
-    return <div className="flex justify-center py-12 text-gray-500">Loading users...</div>;
+    return <div className="flex justify-center py-12 text-gray-500 dark:text-gray-400">Loading users...</div>;
   }
 
   return (
     <div>
       <div className="mb-6 flex items-center justify-between">
-        <h2 className="text-2xl font-bold text-gray-800">Users</h2>
-        <span className="text-sm text-gray-500">{filteredUsers.length} user(s)</span>
+        <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100">Users</h2>
+        <span className="text-sm text-gray-500 dark:text-gray-400">{filteredUsers.length} user(s)</span>
       </div>
 
       <input
@@ -52,18 +52,18 @@ const UsersPage = () => {
         placeholder="Search by name or email..."
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
-        className="mb-6 w-full rounded border border-gray-300 px-4 py-2 focus:border-indigo-500 focus:outline-none"
+        className="mb-6 w-full rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-4 py-2 text-gray-900 dark:text-gray-100 focus:border-indigo-500 focus:outline-none"
       />
 
       {filteredUsers.length === 0 ? (
-        <p className="text-center text-gray-500">No results found for '{searchTerm}'</p>
+        <p className="text-center text-gray-500 dark:text-gray-400">No results found for '{searchTerm}'</p>
       ) : (
         <div className="space-y-3">
           {filteredUsers.map((user) => (
-            <div key={user._id} className="flex items-center justify-between rounded border border-gray-200 bg-white p-4 shadow-sm">
+            <div key={user._id} className="flex items-center justify-between rounded border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4 shadow-sm">
               <div>
-                <p className="font-medium text-gray-800">{user.username}</p>
-                <p className="text-sm text-gray-500">{user.email}</p>
+                <p className="font-medium text-gray-800 dark:text-gray-100">{user.username}</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">{user.email}</p>
               </div>
               <span className="rounded bg-indigo-100 px-2 py-1 text-xs font-medium text-indigo-700">
                 {user.role}

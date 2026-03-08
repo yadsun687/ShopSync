@@ -13,11 +13,11 @@ const CommentItem = ({ comment, depth = 0, onAddReply }) => {
 
   return (
     <div style={{ marginLeft: depth * 20 }} className="mt-3">
-      <div className="rounded border border-gray-200 bg-white p-3 shadow-sm">
-        <p className="text-sm text-gray-800">{comment.content}</p>
+      <div className="rounded border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-3 shadow-sm">
+        <p className="text-sm text-gray-800 dark:text-gray-200">{comment.content}</p>
         <button
           onClick={() => setReplying(!replying)}
-          className="mt-1 text-xs text-indigo-600 hover:underline"
+          className="mt-1 text-xs text-indigo-600 dark:text-indigo-400 hover:underline"
         >
           {replying ? 'Cancel' : 'Reply'}
         </button>
@@ -28,7 +28,7 @@ const CommentItem = ({ comment, depth = 0, onAddReply }) => {
               value={replyText}
               onChange={(e) => setReplyText(e.target.value)}
               placeholder="Write a reply..."
-              className="flex-1 rounded border border-gray-300 px-2 py-1 text-sm focus:border-indigo-500 focus:outline-none"
+              className="flex-1 rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-2 py-1 text-sm text-gray-900 dark:text-gray-100 focus:border-indigo-500 focus:outline-none"
             />
             <button
               onClick={handleSubmitReply}

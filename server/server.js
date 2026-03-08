@@ -22,11 +22,13 @@ const productRoutes = require('./routes/productRoutes');
 const orderRoutes = require('./routes/orderRoutes');
 const userRoutes = require('./routes/userRoutes');
 const queueRoutes = require('./routes/queueRoutes');
+const commentRoutes = require('./routes/commentRoutes');
 app.use('/api/auth', authRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/queue', queueRoutes);
+app.use('/api/comments', commentRoutes);
 
 // Health check route
 app.get("/api/health", (req, res) => {

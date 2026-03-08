@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import api from '../services/axiosInstance';
 
 const InventoryPage = () => {
@@ -97,13 +98,21 @@ const InventoryPage = () => {
                     </span>
                   </td>
                   <td className="px-4 py-3">
-                    <button
-                      onClick={() => deleteProduct(product._id)}
-                      disabled={deletingId === product._id}
-                      className="rounded bg-red-500 px-3 py-1 text-xs text-white hover:bg-red-600 disabled:opacity-50"
-                    >
-                      {deletingId === product._id ? 'Deleting...' : 'Delete'}
-                    </button>
+                    <div className="flex gap-2">
+                      <Link
+                        to={`/products/${product._id}/reviews`}
+                        className="rounded bg-indigo-500 px-3 py-1 text-xs text-white hover:bg-indigo-600"
+                      >
+                        Reviews
+                      </Link>
+                      <button
+                        onClick={() => deleteProduct(product._id)}
+                        disabled={deletingId === product._id}
+                        className="rounded bg-red-500 px-3 py-1 text-xs text-white hover:bg-red-600 disabled:opacity-50"
+                      >
+                        {deletingId === product._id ? 'Deleting...' : 'Delete'}
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}

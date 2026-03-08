@@ -50,6 +50,33 @@ exports.createOrder = async (req, res, next) => {
   }
 };
 
+// DELETE /api/orders/:id — cancel order and revert stock
+exports.cancelOrder = async (req, res, next) => {
+  try {
+    const order = await Order.findById(req.params.id);
+    if (!order) {
+      return res.status(404).json({ message: 'Order not found' });
+    }
+    if (order.status === 'cancelled') {
+      return res.status(400).json({ message: 'Order is already cancelled' });
+    }
+
+    // Revert stock atomically
+    await Product.findByIdAndUpdate(
+      order.productId,
+      { $inc: { stock: order.quantity } }
+    );
+
+    order.status = 'cancelled';
+    await order.save();
+
+    const populated = await Order.findById(order._id).populate('productId', 'name price');
+    res.status(200).json({ status: 'success', message: 'Order cancelled and stock reverted', data: { order: populated } });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
 // GET /api/orders
 exports.getOrders = async (req, res, next) => {
   try {

@@ -13,6 +13,7 @@ import TaskQueuePage from './pages/TaskQueuePage';
 import DashboardPage from './pages/DashboardPage';
 import OrdersPage from './pages/OrdersPage';
 import SellersPage from './pages/SellersPage';
+import ShopPage from './pages/ShopPage';
 
 const ForbiddenPage = () => (
   <div className="flex min-h-screen flex-col items-center justify-center">
@@ -49,6 +50,7 @@ const Layout = ({ children }) => {
             <Link to="/" className="text-sm text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400">Dashboard</Link>
             <Link to="/inventory" className="text-sm text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400">Inventory</Link>
             <Link to="/users" className="text-sm text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400">Users</Link>
+            <Link to="/shop" className="text-sm text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400">Shop</Link>
             <Link to="/orders" className="text-sm text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400">Orders</Link>
             <Link to="/sellers" className="text-sm text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400">Sellers</Link>
             <Link to="/form-builder" className="text-sm text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400">Add Product</Link>
@@ -113,6 +115,7 @@ function App() {
           <Route path="/products/:productId/reviews" element={<ProtectedRoute><Layout><ProductReviewsPage /></Layout></ProtectedRoute>} />
           <Route path="/reviews/:productId" element={<ProtectedRoute><Layout><ProductReviewsPage /></Layout></ProtectedRoute>} />
           <Route path="/users" element={<ProtectedRoute roles={['admin']}><Layout><UsersPage /></Layout></ProtectedRoute>} />
+          <Route path="/shop" element={<ProtectedRoute><Layout><ShopPage /></Layout></ProtectedRoute>} />
           <Route path="/orders" element={<ProtectedRoute><Layout><OrdersPage /></Layout></ProtectedRoute>} />
           <Route path="/sellers" element={<ProtectedRoute><Layout><SellersPage /></Layout></ProtectedRoute>} />
           <Route path="/form-builder" element={<ProtectedRoute><Layout><DynamicFormBuilderPage /></Layout></ProtectedRoute>} />

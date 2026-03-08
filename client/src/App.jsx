@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate, Link } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { FormProvider } from './context/FormContext';
+import { ThemeProvider, useTheme } from './context/ThemeContext';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import UsersPage from './pages/UsersPage';
@@ -22,17 +23,28 @@ const GuestRoute = ({ children }) => {
 
 const Layout = ({ children }) => {
   const { user, logout } = useAuth();
+  const { config, setPrimaryColor } = useTheme();
+
   return (
     <div className="min-h-screen bg-gray-100">
       <nav className="bg-white shadow-sm">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-3">
           <div className="flex items-center gap-6">
-            <Link to="/" className="text-xl font-bold text-indigo-600">ShopSync</Link>
+            <Link to="/" className="text-xl font-bold" style={{ color: config.primaryColor }}>ShopSync</Link>
             <Link to="/" className="text-sm text-gray-600 hover:text-indigo-600">Dashboard</Link>
             <Link to="/inventory" className="text-sm text-gray-600 hover:text-indigo-600">Inventory</Link>
             <Link to="/users" className="text-sm text-gray-600 hover:text-indigo-600">Users</Link>
           </div>
           <div className="flex items-center gap-4">
+            <label className="flex items-center gap-1 text-sm text-gray-600">
+              <span>Color:</span>
+              <input
+                type="color"
+                value={config.primaryColor}
+                onChange={(e) => setPrimaryColor(e.target.value)}
+                className="h-7 w-7 cursor-pointer rounded border-0"
+              />
+            </label>
             <span className="text-sm text-gray-600">{user.username} ({user.role})</span>
             <button onClick={logout} className="rounded bg-red-500 px-3 py-1.5 text-sm text-white hover:bg-red-600">Logout</button>
           </div>
@@ -66,6 +78,7 @@ const Dashboard = () => {
 function App() {
   return (
     <BrowserRouter>
+      <ThemeProvider>
       <AuthProvider>
         <Routes>
           <Route path="/login" element={<GuestRoute><LoginPage /></GuestRoute>} />
@@ -76,6 +89,7 @@ function App() {
           <Route path="/users" element={<ProtectedRoute><Layout><UsersPage /></Layout></ProtectedRoute>} />
         </Routes>
       </AuthProvider>
+      </ThemeProvider>
     </BrowserRouter>
   );
 }

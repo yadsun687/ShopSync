@@ -49,3 +49,13 @@ exports.createOrder = async (req, res, next) => {
     res.status(500).json({ message: err.message });
   }
 };
+
+// GET /api/orders
+exports.getOrders = async (req, res, next) => {
+  try {
+    const orders = await Order.find().populate('productId', 'name price').sort('-createdAt');
+    res.status(200).json({ status: 'success', results: orders.length, data: { orders } });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};

@@ -23,12 +23,13 @@ const orderRoutes = require('./routes/orderRoutes');
 const userRoutes = require('./routes/userRoutes');
 const queueRoutes = require('./routes/queueRoutes');
 const commentRoutes = require('./routes/commentRoutes');
+const { protect, restrictTo } = require('./middleware/authMiddleware');
 app.use('/api/auth', authRoutes);
-app.use('/api/products', productRoutes);
-app.use('/api/orders', orderRoutes);
-app.use('/api/users', userRoutes);
-app.use('/api/queue', queueRoutes);
-app.use('/api/comments', commentRoutes);
+app.use('/api/products', protect, productRoutes);
+app.use('/api/orders', protect, orderRoutes);
+app.use('/api/users', protect, restrictTo('admin'), userRoutes);
+app.use('/api/queue', protect, restrictTo('admin'), queueRoutes);
+app.use('/api/comments', protect, commentRoutes);
 
 // Health check route
 app.get("/api/health", (req, res) => {

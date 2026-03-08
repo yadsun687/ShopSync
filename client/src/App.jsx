@@ -11,11 +11,23 @@ import SellerCard from './components/SellerCard';
 import DynamicFormBuilderPage from './pages/DynamicFormBuilderPage';
 import TaskQueuePage from './pages/TaskQueuePage';
 import DashboardPage from './pages/DashboardPage';
+import OrdersPage from './pages/OrdersPage';
+import SellersPage from './pages/SellersPage';
 
-const ProtectedRoute = ({ children }) => {
+const ForbiddenPage = () => (
+  <div className="flex min-h-screen flex-col items-center justify-center">
+    <h1 className="text-4xl font-bold text-red-600">403</h1>
+    <p className="mt-2 text-lg text-gray-600 dark:text-gray-300">Forbidden — You do not have permission to access this page.</p>
+    <Link to="/" className="mt-4 text-indigo-600 hover:underline dark:text-indigo-400">Go to Dashboard</Link>
+  </div>
+);
+
+const ProtectedRoute = ({ children, roles }) => {
   const { user, isLoading } = useAuth();
   if (isLoading) return <div className="flex min-h-screen items-center justify-center">Loading...</div>;
-  return user ? children : <Navigate to="/login" />;
+  if (!user) return <Navigate to="/login" />;
+  if (roles && !roles.includes(user.role) && user.role !== 'admin') return <ForbiddenPage />;
+  return children;
 };
 
 const GuestRoute = ({ children }) => {
@@ -37,6 +49,8 @@ const Layout = ({ children }) => {
             <Link to="/" className="text-sm text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400">Dashboard</Link>
             <Link to="/inventory" className="text-sm text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400">Inventory</Link>
             <Link to="/users" className="text-sm text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400">Users</Link>
+            <Link to="/orders" className="text-sm text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400">Orders</Link>
+            <Link to="/sellers" className="text-sm text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400">Sellers</Link>
             <Link to="/form-builder" className="text-sm text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400">Add Product</Link>
             <Link to="/tasks" className="text-sm text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400">Tasks</Link>
           </div>
@@ -95,11 +109,14 @@ function App() {
           <Route path="/login" element={<GuestRoute><LoginPage /></GuestRoute>} />
           <Route path="/register" element={<GuestRoute><FormProvider><RegisterPage /></FormProvider></GuestRoute>} />
           <Route path="/" element={<ProtectedRoute><Layout><DashboardPage /></Layout></ProtectedRoute>} />
-          <Route path="/inventory" element={<ProtectedRoute><Layout><InventoryPage /></Layout></ProtectedRoute>} />
+          <Route path="/inventory" element={<ProtectedRoute roles={['admin', 'editor']}><Layout><InventoryPage /></Layout></ProtectedRoute>} />
           <Route path="/products/:productId/reviews" element={<ProtectedRoute><Layout><ProductReviewsPage /></Layout></ProtectedRoute>} />
-          <Route path="/users" element={<ProtectedRoute><Layout><UsersPage /></Layout></ProtectedRoute>} />
+          <Route path="/reviews/:productId" element={<ProtectedRoute><Layout><ProductReviewsPage /></Layout></ProtectedRoute>} />
+          <Route path="/users" element={<ProtectedRoute roles={['admin']}><Layout><UsersPage /></Layout></ProtectedRoute>} />
+          <Route path="/orders" element={<ProtectedRoute><Layout><OrdersPage /></Layout></ProtectedRoute>} />
+          <Route path="/sellers" element={<ProtectedRoute><Layout><SellersPage /></Layout></ProtectedRoute>} />
           <Route path="/form-builder" element={<ProtectedRoute><Layout><DynamicFormBuilderPage /></Layout></ProtectedRoute>} />
-          <Route path="/tasks" element={<ProtectedRoute><Layout><TaskQueuePage /></Layout></ProtectedRoute>} />
+          <Route path="/tasks" element={<ProtectedRoute roles={['admin']}><Layout><TaskQueuePage /></Layout></ProtectedRoute>} />
         </Routes>
       </AuthProvider>
       </ThemeProvider>

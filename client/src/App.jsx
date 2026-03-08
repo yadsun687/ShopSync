@@ -23,14 +23,14 @@ const GuestRoute = ({ children }) => {
 
 const Layout = ({ children }) => {
   const { user, logout } = useAuth();
-  const { config, toggleTheme } = useTheme();
+  const { config, toggleTheme, setPrimaryColor } = useTheme();
 
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900 transition-colors">
       <nav className="bg-white dark:bg-gray-800 shadow-sm">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-3">
           <div className="flex items-center gap-6">
-            <Link to="/" className="text-xl font-bold text-indigo-600 dark:text-indigo-400">ShopSync</Link>
+            <Link to="/" className="text-xl font-bold dark:text-indigo-400" style={{ color: config.primaryColor }}>ShopSync</Link>
             <Link to="/" className="text-sm text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400">Dashboard</Link>
             <Link to="/inventory" className="text-sm text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400">Inventory</Link>
             <Link to="/users" className="text-sm text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400">Users</Link>
@@ -42,6 +42,15 @@ const Layout = ({ children }) => {
             >
               {config.theme === 'dark' ? '☀️ Light' : '🌙 Dark'}
             </button>
+            <label className="flex items-center gap-1 text-sm text-gray-600 dark:text-gray-300">
+              <span>Color:</span>
+              <input
+                type="color"
+                value={config.primaryColor}
+                onChange={(e) => setPrimaryColor(e.target.value)}
+                className="h-7 w-7 cursor-pointer rounded border-0"
+              />
+            </label>
             <span className="text-sm text-gray-600 dark:text-gray-300">{user.username} ({user.role})</span>
             <button onClick={logout} className="rounded bg-red-500 px-3 py-1.5 text-sm text-white hover:bg-red-600">Logout</button>
           </div>

@@ -9,6 +9,7 @@ import InventoryPage from './pages/InventoryPage';
 import ProductReviewsPage from './pages/ProductReviewsPage';
 import SellerCard from './components/SellerCard';
 import DynamicFormBuilderPage from './pages/DynamicFormBuilderPage';
+import TaskQueuePage from './pages/TaskQueuePage';
 
 const ProtectedRoute = ({ children }) => {
   const { user, isLoading } = useAuth();
@@ -36,6 +37,7 @@ const Layout = ({ children }) => {
             <Link to="/inventory" className="text-sm text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400">Inventory</Link>
             <Link to="/users" className="text-sm text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400">Users</Link>
             <Link to="/form-builder" className="text-sm text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400">Add Product</Link>
+            <Link to="/tasks" className="text-sm text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400">Tasks</Link>
           </div>
           <div className="flex items-center gap-4">
             <button
@@ -96,6 +98,7 @@ function App() {
           <Route path="/products/:productId/reviews" element={<ProtectedRoute><Layout><ProductReviewsPage /></Layout></ProtectedRoute>} />
           <Route path="/users" element={<ProtectedRoute><Layout><UsersPage /></Layout></ProtectedRoute>} />
           <Route path="/form-builder" element={<ProtectedRoute><Layout><DynamicFormBuilderPage /></Layout></ProtectedRoute>} />
+          <Route path="/tasks" element={<ProtectedRoute><Layout><TaskQueuePage /></Layout></ProtectedRoute>} />
         </Routes>
       </AuthProvider>
       </ThemeProvider>

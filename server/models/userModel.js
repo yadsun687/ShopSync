@@ -1,26 +1,30 @@
-const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs');
+const mongoose = require("mongoose");
+const bcrypt = require("bcryptjs");
 
 const userSchema = new mongoose.Schema({
   username: {
     type: String,
-    required: [true, 'Username is required'],
+    required: [true, "Username is required"],
     unique: true,
   },
   email: {
     type: String,
-    required: [true, 'Email is required'],
+    required: [true, "Email is required"],
+    match: [
+      /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
+      "Please fill a valid email address",
+    ],
     unique: true,
   },
   password: {
     type: String,
-    required: [true, 'Password is required'],
+    required: [true, "Password is required"],
     select: false,
   },
   role: {
     type: String,
-    enum: ['admin', 'editor', 'staff'],
-    default: 'staff',
+    enum: ["admin", "editor", "staff"],
+    default: "staff",
   },
   isDeleted: {
     type: Boolean,
@@ -34,16 +38,29 @@ const userSchema = new mongoose.Schema({
 });
 
 // Hash password on save (only if modified)
-userSchema.pre('save', async function (next) {
-  if (!this.isModified('password')) return next();
+userSchema.pre("save", async function (next) {
+  //   if (!this.isModified("password")) return next();
 
-  this.password = await bcrypt.hash(this.password, 12);
+  //   this.password = await bcrypt.hash(this.password, 12);
 
-  if (!this.isNew) {
-    this.passwordChangedAt = Date.now();
+  //   if (!this.isNew) {
+  //     this.passwordChangedAt = Date.now();
+  //   }
+
+  //   next();
+
+  if (!this.isModified("password")) return;
+  try {
+    const salt = await bcrypt.genSalt(12);
+    this.password = await bcrypt.hash(this.password, salt);
+
+    if (!this.isNew) {
+      this.passwordChangedAt = Date.now();
+    }
+    return;
+  } catch (error) {
+    throw new Error("some error occured during creating user.");
   }
-
-  next();
 });
 
 // Compare candidate password with stored hash
@@ -54,12 +71,15 @@ userSchema.methods.correctPassword = async function (candidatePassword) {
 // Check if password was changed after JWT was issued
 userSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
   if (this.passwordChangedAt) {
-    const changedTimestamp = parseInt(this.passwordChangedAt.getTime() / 1000, 10);
+    const changedTimestamp = parseInt(
+      this.passwordChangedAt.getTime() / 1000,
+      10,
+    );
     return JWTTimestamp < changedTimestamp;
   }
   return false;
 };
 
-const User = mongoose.model('User', userSchema);
+const User = mongoose.model("User", userSchema);
 
 module.exports = User;

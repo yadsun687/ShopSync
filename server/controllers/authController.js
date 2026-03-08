@@ -11,7 +11,7 @@ const signToken = (user) => {
 };
 
 // POST /api/auth/register
-exports.register = async (req, res) => {
+exports.register = async (req, res, next) => {
   try {
     const { username, email, password } = req.body;
 
@@ -34,7 +34,7 @@ exports.register = async (req, res) => {
 };
 
 // POST /api/auth/login
-exports.login = async (req, res) => {
+exports.login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
 
@@ -67,7 +67,7 @@ exports.login = async (req, res) => {
 };
 
 // POST /api/auth/logout
-exports.logout = (req, res) => {
+exports.logout = (req, res, next) => {
   const token = req.cookies.jwt;
 
   if (token) {
@@ -79,6 +79,6 @@ exports.logout = (req, res) => {
 };
 
 // GET /api/auth/me
-exports.getMe = async (req, res) => {
+exports.getMe = async (req, res, next) => {
   res.status(200).json({ status: 'success', data: { user: req.user } });
 };

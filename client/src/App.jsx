@@ -10,6 +10,7 @@ import ProductReviewsPage from './pages/ProductReviewsPage';
 import SellerCard from './components/SellerCard';
 import DynamicFormBuilderPage from './pages/DynamicFormBuilderPage';
 import TaskQueuePage from './pages/TaskQueuePage';
+import DashboardPage from './pages/DashboardPage';
 
 const ProtectedRoute = ({ children }) => {
   const { user, isLoading } = useAuth();
@@ -93,7 +94,7 @@ function App() {
         <Routes>
           <Route path="/login" element={<GuestRoute><LoginPage /></GuestRoute>} />
           <Route path="/register" element={<GuestRoute><FormProvider><RegisterPage /></FormProvider></GuestRoute>} />
-          <Route path="/" element={<ProtectedRoute><Layout><Dashboard /></Layout></ProtectedRoute>} />
+          <Route path="/" element={<ProtectedRoute><Layout><DashboardPage /></Layout></ProtectedRoute>} />
           <Route path="/inventory" element={<ProtectedRoute><Layout><InventoryPage /></Layout></ProtectedRoute>} />
           <Route path="/products/:productId/reviews" element={<ProtectedRoute><Layout><ProductReviewsPage /></Layout></ProtectedRoute>} />
           <Route path="/users" element={<ProtectedRoute><Layout><UsersPage /></Layout></ProtectedRoute>} />

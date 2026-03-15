@@ -1,10 +1,15 @@
 import { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import api from '../services/axiosInstance';
+
+const SEARCH_DEBOUNCE_MS = 300;
 
 const UsersPage = () => {
   const [allUsers, setAllUsers] = useState([]);
   const [filteredUsers, setFilteredUsers] = useState([]);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchInput, setSearchInput] = useState(searchParams.get('search') ?? '');
+  const [searchTerm, setSearchTerm] = useState(searchParams.get('search') ?? '');
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -20,6 +25,31 @@ const UsersPage = () => {
     };
     fetchUsers();
   }, []);
+
+  useEffect(() => {
+    const nextSearch = searchParams.get('search') ?? '';
+    setSearchInput(nextSearch);
+    setSearchTerm(nextSearch);
+  }, [searchParams]);
+
+  useEffect(() => {
+    const timeoutId = window.setTimeout(() => {
+      setSearchTerm(searchInput);
+      setSearchParams((currentParams) => {
+        const nextParams = new URLSearchParams(currentParams);
+
+        if (searchInput.trim()) {
+          nextParams.set('search', searchInput);
+        } else {
+          nextParams.delete('search');
+        }
+
+        return nextParams;
+      }, { replace: true });
+    }, SEARCH_DEBOUNCE_MS);
+
+    return () => window.clearTimeout(timeoutId);
+  }, [searchInput, setSearchParams]);
 
   useEffect(() => {
     if (!searchTerm.trim()) {
@@ -50,8 +80,8 @@ const UsersPage = () => {
       <input
         type="text"
         placeholder="Search by name or email..."
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
+        value={searchInput}
+        onChange={(e) => setSearchInput(e.target.value)}
         className="mb-6 w-full rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-4 py-2 text-gray-900 dark:text-gray-100 focus:border-indigo-500 focus:outline-none"
       />
 

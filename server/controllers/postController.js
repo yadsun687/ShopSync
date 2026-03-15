@@ -1,7 +1,7 @@
-const Product = require('../models/productModel');
+import Product from '../models/productModel.js';
 
 // GET /api/products/search
-exports.searchProducts = async (req, res, next) => {
+export const searchProducts = async (req, res, next) => {
   try {
     const { tags, page = 1, limit = 5 } = req.query;
 

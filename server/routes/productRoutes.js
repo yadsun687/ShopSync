@@ -1,8 +1,9 @@
-const express = require('express');
+import express from 'express';
+import * as productController from '../controllers/productController.js';
+import * as postController from '../controllers/postController.js';
+import { restrictTo } from '../middleware/authMiddleware.js';
+
 const router = express.Router();
-const productController = require('../controllers/productController');
-const postController = require('../controllers/postController');
-const { restrictTo } = require('../middleware/authMiddleware');
 
 // Static routes must come before /:id routes
 router.get('/stats', productController.getProductStats);
@@ -12,4 +13,4 @@ router.get('/', productController.getProducts);
 router.post('/', restrictTo('admin', 'editor'), productController.createProduct);
 router.delete('/:id', restrictTo('admin'), productController.softDeleteProduct);
 
-module.exports = router;
+export default router;

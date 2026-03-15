@@ -1,13 +1,15 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../services/axiosInstance';
+import useCartStore from '../store/useCartStore';
 
 const ShopPage = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [quantities, setQuantities] = useState({});
-  const [ordering, setOrdering] = useState(null);
   const [toast, setToast] = useState(null);
+  const addItem = useCartStore((state) => state.addItem);
+  const cartItems = useCartStore((state) => state.items);
 
   const showToast = (message, type = 'info') => {
     setToast({ message, type });
@@ -33,28 +35,19 @@ const ShopPage = () => {
     setQuantities((prev) => ({ ...prev, [id]: num }));
   };
 
-  const placeOrder = async (product) => {
+  const addToCart = (product) => {
     const qty = quantities[product._id] || 1;
-    if (qty > product.stock) {
+    const existingCartItem = cartItems.find((item) => item._id === product._id);
+    const nextCartQuantity = (existingCartItem?.quantity || 0) + qty;
+
+    if (qty > product.stock || nextCartQuantity > product.stock) {
       showToast(`Only ${product.stock} in stock`, 'error');
       return;
     }
 
-    setOrdering(product._id);
-    try {
-      await api.post('/orders', { productId: product._id, quantity: qty });
-      // Update local stock
-      setProducts((prev) =>
-        prev.map((p) => (p._id === product._id ? { ...p, stock: p.stock - qty } : p))
-      );
-      setQuantities((prev) => ({ ...prev, [product._id]: 1 }));
-      showToast(`Ordered ${qty}x ${product.name}`, 'success');
-    } catch (err) {
-      const msg = err.response?.data?.message || 'Order failed';
-      showToast(msg, 'error');
-    } finally {
-      setOrdering(null);
-    }
+    addItem(product, qty);
+    setQuantities((prev) => ({ ...prev, [product._id]: 1 }));
+    showToast(`Added ${qty}x ${product.name} to cart`, 'success');
   };
 
   if (loading) {
@@ -79,12 +72,20 @@ const ShopPage = () => {
     <div>
       <div className="mb-6 flex items-center justify-between">
         <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100">Shop</h2>
-        <Link
-          to="/orders"
-          className="rounded bg-indigo-500 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-600"
-        >
-          View Orders
-        </Link>
+        <div className="flex gap-3">
+          <Link
+            to="/cart"
+            className="rounded bg-indigo-500 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-600"
+          >
+            View Cart
+          </Link>
+          <Link
+            to="/orders"
+            className="rounded border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-700"
+          >
+            View Orders
+          </Link>
+        </div>
       </div>
 
       {toast && (
@@ -104,6 +105,7 @@ const ShopPage = () => {
           {products.map((product) => {
             const qty = quantities[product._id] || 1;
             const outOfStock = product.stock === 0;
+            const itemInCart = cartItems.find((item) => item._id === product._id);
 
             return (
               <div
@@ -124,6 +126,11 @@ const ShopPage = () => {
                   <p className={`mt-1 text-sm ${outOfStock ? 'text-red-500 font-semibold' : 'text-gray-500 dark:text-gray-400'}`}>
                     {outOfStock ? 'Out of stock' : `${product.stock} in stock`}
                   </p>
+                  {itemInCart && (
+                    <p className="mt-1 text-sm font-medium text-indigo-600 dark:text-indigo-300">
+                      {itemInCart.quantity} currently in cart
+                    </p>
+                  )}
                   {product.tags?.length > 0 && (
                     <div className="mt-2 flex flex-wrap gap-1">
                       {product.tags.map((tag) => (
@@ -146,11 +153,11 @@ const ShopPage = () => {
                     className="w-16 rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-2 py-1.5 text-center text-sm text-gray-800 dark:text-gray-200 disabled:opacity-50"
                   />
                   <button
-                    onClick={() => placeOrder(product)}
-                    disabled={outOfStock || ordering === product._id}
+                    onClick={() => addToCart(product)}
+                    disabled={outOfStock}
                     className="flex-1 rounded bg-indigo-500 px-3 py-1.5 text-sm font-medium text-white hover:bg-indigo-600 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    {ordering === product._id ? 'Ordering...' : outOfStock ? 'Unavailable' : `Order · $${(product.price * qty).toFixed(2)}`}
+                    {outOfStock ? 'Unavailable' : `Add to Cart · $${(product.price * qty).toFixed(2)}`}
                   </button>
                 </div>
               </div>

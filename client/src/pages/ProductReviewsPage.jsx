@@ -1,28 +1,32 @@
-import { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
-import api from '../services/axiosInstance';
-import CommentItem from '../components/CommentItem';
-import { addReply } from '../utils/commentUtils';
+import { useState, useEffect } from "react";
+import { useParams, Link } from "react-router-dom";
+import api from "../services/axiosInstance";
+import CommentItem from "../components/CommentItem";
+import { addReply } from "../utils/commentUtils";
 
 const ProductReviewsPage = () => {
   const { productId } = useParams();
   const [comments, setComments] = useState([]);
   const [product, setProduct] = useState(null);
-  const [newComment, setNewComment] = useState('');
+  const [newComment, setNewComment] = useState("");
   const [loading, setLoading] = useState(true);
+  const [isError, setError] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const [commentsRes, productsRes] = await Promise.all([
           api.get(`/comments?productId=${productId}`),
-          api.get('/products'),
+          api.get("/products"),
         ]);
         setComments(commentsRes.data.data?.comments || []);
-        const found = productsRes.data.data.products.find((p) => p._id === productId);
+        const found = productsRes.data.data.products.find(
+          (p) => p._id === productId,
+        );
         setProduct(found || null);
       } catch (err) {
-        console.error('Failed to fetch reviews:', err);
+        setError(true);
+        console.error("Failed to fetch reviews:", err);
       } finally {
         setLoading(false);
       }
@@ -33,14 +37,14 @@ const ProductReviewsPage = () => {
   const handleAddComment = async () => {
     if (!newComment.trim()) return;
     try {
-      const res = await api.post('/comments', {
+      const res = await api.post("/comments", {
         content: newComment.trim(),
         productId,
       });
       setComments((prev) => [...prev, res.data.data.comment]);
-      setNewComment('');
+      setNewComment("");
     } catch (err) {
-      console.error('Failed to add comment:', err);
+      console.error("Failed to add comment:", err);
     }
   };
 
@@ -50,20 +54,36 @@ const ProductReviewsPage = () => {
       // Update state immutably using recursive helper
       setComments((prev) => addReply(prev, targetId, res.data.data.reply));
     } catch (err) {
-      console.error('Failed to add reply:', err);
+      console.error("Failed to add reply:", err);
     }
   };
 
   if (loading) {
-    return <div className="flex justify-center py-12 text-gray-500 dark:text-gray-400">Loading reviews...</div>;
+    return (
+      <div className="flex justify-center py-12 text-gray-500 dark:text-gray-400">
+        Loading reviews...
+      </div>
+    );
+  }
+  if (isError) {
+    return (
+      <div className="flex justify-center py-12 text-gray-500 dark:text-gray-400">
+        Product not found
+      </div>
+    );
   }
 
   return (
     <div>
-      <Link to="/inventory" className="text-sm text-indigo-600 dark:text-indigo-400 hover:underline">&larr; Back to Inventory</Link>
+      <Link
+        to="/inventory"
+        className="text-sm text-indigo-600 dark:text-indigo-400 hover:underline"
+      >
+        &larr; Back to Inventory
+      </Link>
 
       <h2 className="mt-4 text-2xl font-bold text-gray-800 dark:text-gray-100">
-        Reviews: {product?.name || 'Product'}
+        Reviews: {product?.name || "Product"}
       </h2>
 
       {/* New comment input */}
@@ -85,7 +105,9 @@ const ProductReviewsPage = () => {
       {/* Comments thread */}
       <div className="mt-6">
         {comments.length === 0 ? (
-          <p className="text-gray-500 dark:text-gray-400">No reviews yet. Be the first to comment!</p>
+          <p className="text-gray-500 dark:text-gray-400">
+            No reviews yet. Be the first to comment!
+          </p>
         ) : (
           comments.map((comment) => (
             <CommentItem

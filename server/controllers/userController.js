@@ -1,7 +1,7 @@
-const User = require('../models/userModel');
+import User from '../models/userModel.js';
 
 // GET /api/users
-exports.getUsers = async (req, res, next) => {
+export const getUsers = async (req, res, next) => {
   try {
     const users = await User.find({ isDeleted: false });
     res.status(200).json({ status: 'success', results: users.length, data: { users } });
@@ -11,7 +11,7 @@ exports.getUsers = async (req, res, next) => {
 };
 
 // DELETE /api/users/:id (soft delete)
-exports.softDeleteUser = async (req, res, next) => {
+export const softDeleteUser = async (req, res, next) => {
   try {
     const user = await User.findByIdAndUpdate(
       req.params.id,
@@ -30,7 +30,7 @@ exports.softDeleteUser = async (req, res, next) => {
 };
 
 // PATCH /api/users/:id/restore
-exports.restoreUser = async (req, res, next) => {
+export const restoreUser = async (req, res, next) => {
   try {
     const user = await User.findByIdAndUpdate(
       req.params.id,

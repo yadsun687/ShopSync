@@ -1,8 +1,8 @@
-const jwt = require('jsonwebtoken');
-const User = require('../models/userModel');
-const { isBlacklisted } = require('../utils/tokenBlacklist');
+import jwt from 'jsonwebtoken';
+import User from '../models/userModel.js';
+import { isBlacklisted } from '../utils/tokenBlacklist.js';
 
-exports.protect = async (req, res, next) => {
+export const protect = async (req, res, next) => {
   try {
     // 1. Extract token from cookie or Authorization header
     let token;
@@ -51,7 +51,7 @@ exports.protect = async (req, res, next) => {
   }
 };
 
-exports.restrictTo = (...roles) => {
+export const restrictTo = (...roles) => {
   return (req, res, next) => {
     // Admin implicitly passes all role checks
     if (req.user.role === 'admin') return next();

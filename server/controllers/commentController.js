@@ -1,7 +1,7 @@
-const Comment = require('../models/commentModel');
+import Comment from '../models/commentModel.js';
 
 // GET /api/comments?productId=xxx
-exports.getComments = async (req, res, next) => {
+export const getComments = async (req, res, next) => {
   try {
     const filter = {};
     if (req.query.productId) {
@@ -15,7 +15,7 @@ exports.getComments = async (req, res, next) => {
 };
 
 // POST /api/comments
-exports.createComment = async (req, res, next) => {
+export const createComment = async (req, res, next) => {
   try {
     const { content, productId } = req.body;
     if (!content) {
@@ -33,7 +33,7 @@ exports.createComment = async (req, res, next) => {
 };
 
 // POST /api/comments/:id/reply
-exports.addReply = async (req, res, next) => {
+export const addReply = async (req, res, next) => {
   try {
     const { content } = req.body;
     if (!content) {

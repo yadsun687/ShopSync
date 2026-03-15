@@ -1,5 +1,5 @@
-const mongoose = require("mongoose");
-const bcrypt = require("bcryptjs");
+import mongoose from "mongoose";
+import bcrypt from "bcryptjs";
 
 const userSchema = new mongoose.Schema({
   username: {
@@ -15,6 +15,7 @@ const userSchema = new mongoose.Schema({
       "Please fill a valid email address",
     ],
     unique: true,
+    lowercase: true,
   },
   password: {
     type: String,
@@ -39,28 +40,17 @@ const userSchema = new mongoose.Schema({
 
 // Hash password on save (only if modified)
 userSchema.pre("save", async function (next) {
-  //   if (!this.isModified("password")) return next();
+  if (!this.isModified("password")) return
 
-  //   this.password = await bcrypt.hash(this.password, 12);
+  const salt = await bcrypt.genSalt(12);
+  this.password = await bcrypt.hash(this.password, salt);
 
-  //   if (!this.isNew) {
-  //     this.passwordChangedAt = Date.now();
-  //   }
-
-  //   next();
-
-  if (!this.isModified("password")) return;
-  try {
-    const salt = await bcrypt.genSalt(12);
-    this.password = await bcrypt.hash(this.password, salt);
-
-    if (!this.isNew) {
-      this.passwordChangedAt = Date.now();
-    }
-    return;
-  } catch (error) {
-    throw new Error("some error occured during creating user.");
+  // Subtract 1 s so tokens issued at the exact same second are also invalidated
+  if (!this.isNew) {
+    this.passwordChangedAt = new Date(Date.now() - 1000);
   }
+
+  return;
 });
 
 // Compare candidate password with stored hash
@@ -82,4 +72,4 @@ userSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
 
 const User = mongoose.model("User", userSchema);
 
-module.exports = User;
+export default User;

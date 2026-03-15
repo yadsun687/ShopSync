@@ -1,8 +1,8 @@
-const Order = require('../models/orderModel');
-const Product = require('../models/productModel');
+import Order from '../models/orderModel.js';
+import Product from '../models/productModel.js';
 
 // POST /api/orders
-exports.createOrder = async (req, res, next) => {
+export const createOrder = async (req, res, next) => {
   try {
     const { productId, quantity } = req.body;
 
@@ -51,7 +51,7 @@ exports.createOrder = async (req, res, next) => {
 };
 
 // DELETE /api/orders/:id — cancel order and revert stock
-exports.cancelOrder = async (req, res, next) => {
+export const cancelOrder = async (req, res, next) => {
   try {
     const order = await Order.findById(req.params.id);
     if (!order) {
@@ -78,7 +78,7 @@ exports.cancelOrder = async (req, res, next) => {
 };
 
 // GET /api/orders
-exports.getOrders = async (req, res, next) => {
+export const getOrders = async (req, res, next) => {
   try {
     const orders = await Order.find().populate('productId', 'name price').sort('-createdAt');
     res.status(200).json({ status: 'success', results: orders.length, data: { orders } });

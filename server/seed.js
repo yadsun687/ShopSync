@@ -1,11 +1,10 @@
-const mongoose = require("mongoose");
-const bcrypt = require("bcryptjs");
-require("dotenv").config();
+import mongoose from "mongoose";
+import 'dotenv/config';
 
-const User = require("./models/userModel");
-const Product = require("./models/productModel");
-const Order = require("./models/orderModel");
-const Comment = require("./models/commentModel");
+import User from "./models/userModel.js";
+import Product from "./models/productModel.js";
+import Order from "./models/orderModel.js";
+import Comment from "./models/commentModel.js";
 
 const users = [
   {

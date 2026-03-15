@@ -70,4 +70,4 @@ const resetTasks = () => {
   runningCount = 0;
 };
 
-module.exports = { addTasks, processTasks, getTasks, resetTasks };
+export { addTasks, processTasks, getTasks, resetTasks };

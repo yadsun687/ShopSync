@@ -1,6 +1,7 @@
-const express = require('express');
+import express from 'express';
+import { addTasks, processTasks, getTasks, resetTasks } from '../utils/taskQueue.js';
+
 const router = express.Router();
-const { addTasks, processTasks, getTasks, resetTasks } = require('../utils/taskQueue');
 
 // POST /api/queue/start — add 10 tasks and begin processing
 router.post('/start', (req, res, next) => {
@@ -15,4 +16,4 @@ router.get('/status', (req, res, next) => {
   res.status(200).json({ status: 'success', tasks: getTasks() });
 });
 
-module.exports = router;
+export default router;

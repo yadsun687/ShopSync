@@ -1,7 +1,7 @@
-const Product = require('../models/productModel');
+import Product from '../models/productModel.js';
 
 // POST /api/products
-exports.createProduct = async (req, res, next) => {
+export const createProduct = async (req, res, next) => {
   try {
     const product = await Product.create(req.body);
     res.status(201).json({ status: 'success', data: { product } });
@@ -14,7 +14,7 @@ exports.createProduct = async (req, res, next) => {
 };
 
 // GET /api/products
-exports.getProducts = async (req, res, next) => {
+export const getProducts = async (req, res, next) => {
   try {
     const filter = { isDeleted: false };
 
@@ -34,7 +34,7 @@ exports.getProducts = async (req, res, next) => {
 };
 
 // DELETE /api/products/:id (soft delete)
-exports.softDeleteProduct = async (req, res, next) => {
+export const softDeleteProduct = async (req, res, next) => {
   try {
     const product = await Product.findByIdAndUpdate(
       req.params.id,
@@ -53,7 +53,7 @@ exports.softDeleteProduct = async (req, res, next) => {
 };
 
 // GET /api/products/stats
-exports.getProductStats = async (req, res, next) => {
+export const getProductStats = async (req, res, next) => {
   try {
     const stats = await Product.aggregate([
       { $match: { isDeleted: false } },
